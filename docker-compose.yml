@@ -1,24 +1,35 @@
-version: "3"
+version: '3'
+
 services:
+  frontend:
+    image: nginx:alpine
+    container_name: journal-frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    restart: always
+
   backend:
     build: ./backend
+    container_name: journal-backend
     ports:
       - "3000:3000"
     environment:
-      MYSQL_HOST: db
-      MYSQL_USER: root
-      MYSQL_PASSWORD: example
-      MYSQL_DATABASE: daily_journal
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: journal_db
     depends_on:
       - db
+    restart: always
+
   db:
-    image: mysql:latest
+    image: mysql:5.7
+    container_name: journal-db
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: daily_journal
-    volumes:
-      - db_data:/var/lib/mysql
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: journal_db
     ports:
       - "3306:3306"
-volumes:
-  db_data:
+    restart: always
