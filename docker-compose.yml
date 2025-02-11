@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  web:
+    image: nginx
+    container_name: webserver
+    volumes:
+      - ./journal:/usr/share/nginx/html
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: notesapp
